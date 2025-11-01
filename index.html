@@ -4,28 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HabitForge - Build Better Habits</title>
-
     <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
-    <!-- Start Date Modal -->
-    <div id="start-date-modal" class="modal">
-        <div class="modal-content">
-            <h2>Welcome to HabitForge</h2>
-            <p>Select your start date to begin your habit-building journey:</p>
-            <input type="date" id="start-date-input">
-            <button id="confirm-start-date" class="btn btn-primary">Start Journey</button>
-        </div>
-    </div>
-
     <!-- Add Habit Modal -->
     <div id="add-habit-modal" class="modal">
         <div class="modal-content">
             <h2>Add New Habit</h2>
             <input type="text" id="new-habit-name" placeholder="Enter habit name">
+            <div class="quick-habits">
+                <p>Quick add:</p>
+                <div class="quick-habits-list">
+                    <button class="quick-habit-btn" data-habit="Meditation">Meditation</button>
+                    <button class="quick-habit-btn" data-habit="Reading">Reading</button>
+                    <button class="quick-habit-btn" data-habit="Journaling">Journaling</button>
+                    <button class="quick-habit-btn" data-habit="Water Intake">Water Intake</button>
+                </div>
+            </div>
             <div class="modal-actions">
                 <button id="cancel-add-habit" class="btn btn-secondary">Cancel</button>
                 <button id="save-new-habit" class="btn btn-primary">Save Habit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="add-task-modal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Task</h2>
+            <input type="text" id="new-task-name" placeholder="Enter task description">
+            <div class="modal-actions">
+                <button id="cancel-add-task" class="btn btn-secondary">Cancel</button>
+                <button id="save-new-task" class="btn btn-primary">Save Task</button>
             </div>
         </div>
     </div>
@@ -38,6 +48,24 @@
             <input type="number" id="target-streak-input" min="1" max="365" value="90">
             <button id="save-target-streak" class="btn btn-primary">Set Goal</button>
         </div>
+    </div>
+
+    <!-- Edit Start Date Modal -->
+    <div id="edit-start-date-modal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Start Date</h2>
+            <p>Change your habit journey start date:</p>
+            <input type="date" id="edit-start-date-input">
+            <div class="modal-actions">
+                <button id="cancel-edit-start-date" class="btn btn-secondary">Cancel</button>
+                <button id="save-start-date" class="btn btn-primary">Save Date</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Motivational Toast -->
+    <div id="motivational-toast" class="toast">
+        <p id="toast-message">Great job! Keep it up!</p>
     </div>
 
     <div class="container">
@@ -54,16 +82,9 @@
             </div>
         </div>
 
-        <!-- Tabs Navigation -->
-        <div class="card">
-            <div class="tabs">
-                <button id="habits-tab" class="tab active">Daily Habits</button>
-                <button id="progress-tab" class="tab">Progress</button>
-            </div>
-        </div>
-
-        <!-- Habits Tab Content -->
-        <div id="habits-content" class="tab-content active">
+        <!-- Tab Contents -->
+        <!-- Dashboard Tab -->
+        <div id="dashboard-content" class="tab-content active">
             <!-- Progress Circle -->
             <div class="card">
                 <div class="progress-container">
@@ -85,16 +106,59 @@
                             <span id="progress-percent" class="progress-percent">0% complete</span>
                         </div>
                     </div>
-                    <button id="edit-target-btn" class="btn-edit">
-                        <svg class="icon-edit" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                        </svg>
-                        Edit Goal
-                    </button>
+                    <div class="progress-actions">
+                        <button id="edit-target-btn" class="btn-edit">
+                            <svg class="icon-edit" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                            </svg>
+                            Edit Goal
+                        </button>
+                        <button id="streak-info-btn" class="btn-edit">
+                            <svg class="icon-info" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                            </svg>
+                            Streak Info
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Habits Section -->
+            <!-- Streak Info -->
+            <div id="streak-info" class="card streak-info hidden">
+                <h3>Your Streak Journey</h3>
+                <div class="streak-details">
+                    <div class="streak-detail">
+                        <span class="streak-label">Start Date:</span>
+                        <span id="streak-start-date" class="streak-value">-</span>
+                    </div>
+                    <div class="streak-detail">
+                        <span class="streak-label">Current Streak:</span>
+                        <span id="streak-current" class="streak-value">0 days</span>
+                    </div>
+                    <div class="streak-detail">
+                        <span class="streak-label">Goal:</span>
+                        <span id="streak-goal" class="streak-value">90 days</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Motivational Quote -->
+            <div class="card">
+                <div class="quote-container">
+                    <div class="quote-icon">💫</div>
+                    <p id="daily-quote" class="quote-text">Your journey to better habits starts today!</p>
+                </div>
+            </div>
+
+            <!-- Reflection Journal -->
+            <div class="card">
+                <h2>Daily Reflection</h2>
+                <textarea id="reflection-text" placeholder="How did your day go? Any challenges or wins?"></textarea>
+            </div>
+        </div>
+
+        <!-- Habits Tab -->
+        <div id="habits-content" class="tab-content">
             <div class="card">
                 <div class="habits-header">
                     <h2>Today's Habits</h2>
@@ -109,39 +173,28 @@
                     <!-- Habits will be dynamically generated here -->
                 </div>
             </div>
+        </div>
 
-            <!-- Reflection Journal -->
+        <!-- Tasks Tab -->
+        <div id="tasks-content" class="tab-content">
             <div class="card">
-                <h2>Daily Reflection</h2>
-                <textarea id="reflection-text" placeholder="How did your day go? Any challenges or wins?"></textarea>
+                <div class="tasks-header">
+                    <h2>Today's Tasks</h2>
+                    <button id="add-task-btn" class="btn btn-success">
+                        <svg class="icon-add" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/>
+                        </svg>
+                        Add Task
+                    </button>
+                </div>
+                <div class="tasks-container" id="tasks-container">
+                    <!-- Tasks will be dynamically generated here -->
+                </div>
             </div>
         </div>
 
-        <!-- Progress Tab Content -->
+        <!-- Progress Tab -->
         <div id="progress-content" class="tab-content">
-            <!-- Stats Overview -->
-            <div class="card">
-                <h2>Stats Overview</h2>
-                <div class="stats-grid">
-                    <div class="stat-card stat-card-blue">
-                        <div class="stat-value" id="completion-rate">0%</div>
-                        <div class="stat-label">Average Completion</div>
-                    </div>
-                    <div class="stat-card stat-card-green">
-                        <div class="stat-value" id="total-days">0</div>
-                        <div class="stat-label">Days Tracked</div>
-                    </div>
-                    <div class="stat-card stat-card-purple">
-                        <div class="stat-value" id="current-streak-display">0</div>
-                        <div class="stat-label">Current Streak</div>
-                    </div>
-                    <div class="stat-card stat-card-orange">
-                        <div class="stat-value" id="total-habits">0</div>
-                        <div class="stat-label">Total Habits</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- 30-Day Progress Chart -->
             <div class="card">
                 <h2>30-Day Progress</h2>
@@ -150,49 +203,83 @@
                 </div>
             </div>
         </div>
+
+        <!-- Menu Tab -->
+        <div id="menu-content" class="tab-content">
+            <div class="card">
+                <h2>Settings</h2>
+                <div class="menu-actions">
+                    <button id="edit-start-date-btn" class="btn btn-primary full-width">
+                        <svg class="icon-calendar" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                        </svg>
+                        Edit Start Date
+                    </button>
+                    <button id="export-data" class="btn btn-secondary full-width">
+                        <svg class="icon-export" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                        Export Data
+                    </button>
+                    <button id="import-data" class="btn btn-secondary full-width">
+                        <svg class="icon-download" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                        Import Data
+                    </button>
+                    <button id="reset-all" class="btn btn-danger full-width">
+                        <svg class="icon-reset" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                        </svg>
+                        Reset All Data
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>About HabitForge</h2>
+                <div class="about-content">
+                    <p>A simple, focused habit tracker to help you build lasting habits and achieve your goals.</p>
+                    <div class="version-info">Version 2.3</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <button id="menu-habits" class="nav-item active">
+        <button id="nav-dashboard" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            <span class="nav-label">Dashboard</span>
+        </button>
+        <button id="nav-habits" class="nav-item">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
             </svg>
-            <span>Habits</span>
+            <span class="nav-label">Habits</span>
         </button>
-
-        <button id="menu-progress" class="nav-item">
+        <button id="nav-tasks" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            </svg>
+            <span class="nav-label">Tasks</span>
+        </button>
+        <button id="nav-progress" class="nav-item">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
             </svg>
-            <span>Progress</span>
+            <span class="nav-label">Progress</span>
         </button>
-
-        <button id="menu-actions" class="nav-item">
+        <button id="nav-menu" class="nav-item">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
-            <span>Menu</span>
+            <span class="nav-label">Menu</span>
         </button>
     </nav>
-
-    <!-- Actions Modal -->
-    <div id="actions-modal" class="modal bottom-modal">
-        <div class="modal-content">
-            <h3>Menu</h3>
-            <div class="action-list">
-                <button id="export-data" class="action-item">Export Data</button>
-                <button id="import-data" class="action-item">Import Data</button>
-                <button id="reset-all" class="action-item action-item-danger">Reset All Data</button>
-            </div>
-            <button id="close-actions" class="btn btn-secondary">Cancel</button>
-        </div>
-    </div>
-
-    <!-- Motivational Toast -->
-    <div id="motivational-toast" class="toast">
-        <p id="toast-message">Great job! Keep it up!</p>
-    </div>
 
     <!-- Hidden file input for import -->
     <input type="file" id="import-file" class="hidden" accept=".json">
