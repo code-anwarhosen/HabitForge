@@ -5,121 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HabitForge - Build Better Habits</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <link rel="stylesheet" href="assets/tailwind.css">
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="src/style.css">
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body>
     <!-- Start Date Modal -->
-    <div id="start-date-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg p-6 max-w-md mx-4">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Welcome to HabitForge</h2>
-            <p class="text-gray-600 mb-4">Select your start date to begin your habit-building journey:</p>
-            <input type="date" id="start-date-input" class="w-full border rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <button id="confirm-start-date" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold">
-                Start Journey
-            </button>
+    <div id="start-date-modal" class="modal">
+        <div class="modal-content">
+            <h2>Welcome to HabitForge</h2>
+            <p>Select your start date to begin your habit-building journey:</p>
+            <input type="date" id="start-date-input">
+            <button id="confirm-start-date" class="btn btn-primary">Start Journey</button>
         </div>
     </div>
 
     <!-- Add Habit Modal -->
-    <div id="add-habit-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg p-6 max-w-md mx-4 w-full">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Add New Habit</h2>
-            <input type="text" id="new-habit-name" placeholder="Enter habit name" 
-                   class="w-full border rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <div class="flex space-x-3">
-                <button id="cancel-add-habit" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg font-semibold">
-                    Cancel
-                </button>
-                <button id="save-new-habit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold">
-                    Save Habit
-                </button>
+    <div id="add-habit-modal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Habit</h2>
+            <input type="text" id="new-habit-name" placeholder="Enter habit name">
+            <div class="modal-actions">
+                <button id="cancel-add-habit" class="btn btn-secondary">Cancel</button>
+                <button id="save-new-habit" class="btn btn-primary">Save Habit</button>
             </div>
         </div>
     </div>
 
     <!-- Target Streak Modal -->
-    <div id="target-streak-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg p-6 max-w-md mx-4 w-full">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Set Your Goal</h2>
-            <p class="text-gray-600 mb-4">How many days do you want to build this habit?</p>
-            <input type="number" id="target-streak-input" min="1" max="365" value="90" 
-                   class="w-full border rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <button id="save-target-streak" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold">
-                Set Goal
-            </button>
+    <div id="target-streak-modal" class="modal">
+        <div class="modal-content">
+            <h2>Set Your Goal</h2>
+            <p>How many days do you want to build this habit?</p>
+            <input type="number" id="target-streak-input" min="1" max="365" value="90">
+            <button id="save-target-streak" class="btn btn-primary">Set Goal</button>
         </div>
     </div>
 
-    <div class="container mx-auto px-4 pb-20 max-w-4xl">
+    <div class="container">
         <!-- Header -->
-        <header class="text-center py-6">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">HabitForge</h1>
-            <p class="text-gray-600">Build lasting habits, one day at a time</p>
+        <header class="header">
+            <h1>HabitForge</h1>
+            <p>Build lasting habits, one day at a time</p>
         </header>
 
         <!-- Date Picker -->
-        <div class="bg-white rounded-lg shadow p-4 mb-6">
-            <div class="flex justify-center">
-                <input type="date" id="date-picker" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center">
+        <div class="card">
+            <div class="date-picker-container">
+                <input type="date" id="date-picker">
             </div>
         </div>
 
         <!-- Tabs Navigation -->
-        <div class="bg-white rounded-lg shadow mb-6">
-            <div class="flex border-b">
-                <button id="habits-tab" class="tab-button flex-1 py-4 px-4 text-center font-medium border-b-2 border-blue-500 text-blue-600">
-                    Daily Habits
-                </button>
-                <button id="progress-tab" class="tab-button flex-1 py-4 px-4 text-center font-medium text-gray-500 hover:text-gray-700">
-                    Progress
-                </button>
+        <div class="card">
+            <div class="tabs">
+                <button id="habits-tab" class="tab active">Daily Habits</button>
+                <button id="progress-tab" class="tab">Progress</button>
             </div>
         </div>
 
         <!-- Habits Tab Content -->
-        <div id="habits-content" class="tab-content">
+        <div id="habits-content" class="tab-content active">
             <!-- Progress Circle -->
-            <div class="bg-white rounded-lg shadow p-6 mb-6">
-                <div class="flex flex-col items-center">
-                    <!-- Smaller Progress Circle with X/X days -->
-                    <div class="relative w-40 h-40 mb-4">
-                        <svg class="w-full h-full" viewBox="0 0 36 36">
-                            <!-- Background circle -->
-                            <path
+            <div class="card">
+                <div class="progress-container">
+                    <div class="progress-circle-wrapper">
+                        <svg class="progress-circle-svg" viewBox="0 0 36 36">
+                            <path class="progress-circle-bg"
                                 d="M18 2.0845
                                 a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831"
-                                fill="none"
-                                stroke="#eee"
-                                stroke-width="3"
-                            />
-                            <!-- Progress circle -->
-                            <path
-                                id="progress-circle"
+                                a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path id="progress-circle"
+                                class="progress-circle-fill"
                                 d="M18 2.0845
                                 a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831"
-                                fill="none"
-                                stroke="#3b82f6"
-                                stroke-width="3"
-                                stroke-dasharray="0, 100"
-                                class="progress-circle transition-all duration-500 ease-out"
-                            />
+                                a 15.9155 15.9155 0 0 1 0 -31.831"/>
                         </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span id="progress-days" class="text-xl font-bold text-gray-800">0</span>
-                            <span id="progress-target" class="text-sm text-gray-600">/ 90 days</span>
-                            <span id="progress-percent" class="text-xs text-gray-500 mt-1">0% complete</span>
+                        <div class="progress-text">
+                            <span id="progress-days" class="progress-days">0</span>
+                            <span id="progress-target" class="progress-target">/ 90 days</span>
+                            <span id="progress-percent" class="progress-percent">0% complete</span>
                         </div>
                     </div>
-                    
-                    <!-- Edit Target Button -->
-                    <button id="edit-target-btn" class="text-blue-600 hover:text-blue-800 text-sm flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    <button id="edit-target-btn" class="btn-edit">
+                        <svg class="icon-edit" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
                         </svg>
                         Edit Goal
                     </button>
@@ -127,121 +95,109 @@
             </div>
 
             <!-- Habits Section -->
-            <div class="bg-white rounded-lg shadow p-4 mb-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold text-gray-800">Today's Habits</h2>
-                    <button id="add-habit-btn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center text-sm transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+            <div class="card">
+                <div class="habits-header">
+                    <h2>Today's Habits</h2>
+                    <button id="add-habit-btn" class="btn btn-success">
+                        <svg class="icon-add" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/>
                         </svg>
                         Add Habit
                     </button>
                 </div>
-                <div class="space-y-3" id="habits-container">
+                <div class="habits-container" id="habits-container">
                     <!-- Habits will be dynamically generated here -->
                 </div>
             </div>
 
             <!-- Reflection Journal -->
-            <div class="bg-white rounded-lg shadow p-4 mb-6">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Daily Reflection</h2>
-                <textarea id="reflection-text" placeholder="How did your day go? Any challenges or wins?" 
-                          class="w-full h-32 border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            <div class="card">
+                <h2>Daily Reflection</h2>
+                <textarea id="reflection-text" placeholder="How did your day go? Any challenges or wins?"></textarea>
             </div>
         </div>
 
         <!-- Progress Tab Content -->
-        <div id="progress-content" class="tab-content hidden">
-            <!-- Stats Overview First -->
-            <div class="bg-white rounded-lg shadow p-4 mb-6">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Stats Overview</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200 stat-card">
-                        <p class="text-2xl font-bold text-blue-600" id="completion-rate">0%</p>
-                        <p class="text-gray-600 text-sm">Average Completion</p>
+        <div id="progress-content" class="tab-content">
+            <!-- Stats Overview -->
+            <div class="card">
+                <h2>Stats Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card stat-card-blue">
+                        <div class="stat-value" id="completion-rate">0%</div>
+                        <div class="stat-label">Average Completion</div>
                     </div>
-                    <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200 stat-card">
-                        <p class="text-2xl font-bold text-green-600" id="total-days">0</p>
-                        <p class="text-gray-600 text-sm">Days Tracked</p>
+                    <div class="stat-card stat-card-green">
+                        <div class="stat-value" id="total-days">0</div>
+                        <div class="stat-label">Days Tracked</div>
                     </div>
-                </div>
-                <div class="mt-4 grid grid-cols-2 gap-4">
-                    <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200 stat-card">
-                        <p class="text-2xl font-bold text-purple-600" id="current-streak-display">0</p>
-                        <p class="text-gray-600 text-sm">Current Streak</p>
+                    <div class="stat-card stat-card-purple">
+                        <div class="stat-value" id="current-streak-display">0</div>
+                        <div class="stat-label">Current Streak</div>
                     </div>
-                    <div class="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg border border-orange-200 stat-card">
-                        <p class="text-2xl font-bold text-orange-600" id="total-habits">0</p>
-                        <p class="text-gray-600 text-sm">Total Habits</p>
+                    <div class="stat-card stat-card-orange">
+                        <div class="stat-value" id="total-habits">0</div>
+                        <div class="stat-label">Total Habits</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 30-Day Progress Chart Second -->
-            <div class="bg-white rounded-lg shadow p-4">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">30-Day Progress</h2>
-                <div class="chart-container" style="position: relative; height:300px; width:100%">
+            <!-- 30-Day Progress Chart -->
+            <div class="card">
+                <h2>30-Day Progress</h2>
+                <div class="chart-container">
                     <canvas id="progress-chart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Navigation Menu -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-3 px-6">
-        <div class="flex justify-between items-center max-w-md mx-auto">
-            <button id="menu-habits" class="flex flex-col items-center text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                <span class="text-xs mt-1">Habits</span>
-            </button>
-            
-            <button id="menu-progress" class="flex flex-col items-center text-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                <span class="text-xs mt-1">Progress</span>
-            </button>
-            
-            <button id="menu-actions" class="flex flex-col items-center text-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-                </svg>
-                <span class="text-xs mt-1">Menu</span>
-            </button>
-        </div>
-    </div>
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button id="menu-habits" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            <span>Habits</span>
+        </button>
+
+        <button id="menu-progress" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+            <span>Progress</span>
+        </button>
+
+        <button id="menu-actions" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/>
+            </svg>
+            <span>Menu</span>
+        </button>
+    </nav>
 
     <!-- Actions Modal -->
-    <div id="actions-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-end justify-center z-50 hidden">
-        <div class="bg-white rounded-t-2xl w-full max-w-md p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Menu</h3>
-            <div class="space-y-3">
-                <button id="export-data" class="w-full text-left px-4 py-3 bg-white hover:bg-gray-50 rounded-lg border border-gray-200">
-                    Export Data
-                </button>
-                <button id="import-data" class="w-full text-left px-4 py-3 bg-white hover:bg-gray-50 rounded-lg border border-gray-200">
-                    Import Data
-                </button>
-                <button id="reset-all" class="w-full text-left px-4 py-3 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg border border-red-200">
-                    Reset All Data
-                </button>
+    <div id="actions-modal" class="modal bottom-modal">
+        <div class="modal-content">
+            <h3>Menu</h3>
+            <div class="action-list">
+                <button id="export-data" class="action-item">Export Data</button>
+                <button id="import-data" class="action-item">Import Data</button>
+                <button id="reset-all" class="action-item action-item-danger">Reset All Data</button>
             </div>
-            <button id="close-actions" class="w-full mt-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg font-medium">
-                Cancel
-            </button>
+            <button id="close-actions" class="btn btn-secondary">Cancel</button>
         </div>
     </div>
 
     <!-- Motivational Toast -->
-    <div id="motivational-toast" class="toast bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
-        <p id="toast-message" class="text-center">Great job! Keep it up!</p>
+    <div id="motivational-toast" class="toast">
+        <p id="toast-message">Great job! Keep it up!</p>
     </div>
 
     <!-- Hidden file input for import -->
     <input type="file" id="import-file" class="hidden" accept=".json">
 
-    <script src="assets/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="src/script.js"></script>
 </body>
 </html>

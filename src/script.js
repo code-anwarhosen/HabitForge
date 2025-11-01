@@ -87,6 +87,8 @@ class HabitForge {
             reflectionText: document.getElementById('reflection-text'),
             completionRate: document.getElementById('completion-rate'),
             totalDays: document.getElementById('total-days'),
+            currentStreakDisplay: document.getElementById('current-streak-display'),
+            totalHabits: document.getElementById('total-habits'),
             
             // Action buttons
             resetAll: document.getElementById('reset-all'),
@@ -122,16 +124,20 @@ class HabitForge {
     showStartDateModal() {
         const today = this.dataService.getLocalDateString(new Date());
         this.elements.startDateInput.value = today;
-        this.elements.startDateModal.classList.remove('hidden');
+        this.elements.startDateModal.classList.add('active');
+    }
+
+    hideStartDateModal() {
+        this.elements.startDateModal.classList.remove('active');
     }
 
     showTargetStreakModal() {
         this.elements.targetStreakInput.value = this.state.targetStreak;
-        this.elements.targetStreakModal.classList.remove('hidden');
+        this.elements.targetStreakModal.classList.add('active');
     }
 
     hideTargetStreakModal() {
-        this.elements.targetStreakModal.classList.add('hidden');
+        this.elements.targetStreakModal.classList.remove('active');
     }
 
     updateTargetStreak() {
@@ -158,17 +164,17 @@ class HabitForge {
 
         // Update color based on progress
         if (percentage >= 100) {
-            this.elements.progressCircle.setAttribute('stroke', '#10b981');
+            this.elements.progressCircle.style.stroke = '#10b981';
             this.elements.progressCircle.classList.add('celebrate');
             setTimeout(() => {
                 this.elements.progressCircle.classList.remove('celebrate');
             }, 500);
         } else if (percentage >= 75) {
-            this.elements.progressCircle.setAttribute('stroke', '#3b82f6');
+            this.elements.progressCircle.style.stroke = '#3b82f6';
         } else if (percentage >= 50) {
-            this.elements.progressCircle.setAttribute('stroke', '#f59e0b');
+            this.elements.progressCircle.style.stroke = '#f59e0b';
         } else {
-            this.elements.progressCircle.setAttribute('stroke', '#ef4444');
+            this.elements.progressCircle.style.stroke = '#ef4444';
         }
     }
 
@@ -193,31 +199,26 @@ class HabitForge {
             // Set initial state
             const checkbox = document.getElementById(habit.id);
             const label = checkbox.nextElementSibling;
-            const checkIcon = label.querySelector('.check-icon');
             const statusIndicator = label.querySelector('.status-indicator');
             
             if (habit.completed) {
                 checkbox.checked = true;
-                label.classList.add('bg-green-50', 'border-green-300');
-                checkIcon.classList.remove('hidden');
-                statusIndicator.classList.remove('bg-gray-200');
-                statusIndicator.classList.add('bg-green-500');
+                label.classList.add('habit-completed');
+                statusIndicator.style.backgroundColor = 'white';
             }
             
             // Add event listeners
-            this.setupHabitEventListeners(habit, checkbox, label, checkIcon, statusIndicator);
+            this.setupHabitEventListeners(habit, checkbox, label, statusIndicator);
         });
     }
 
-    setupHabitEventListeners(habit, checkbox, label, checkIcon, statusIndicator) {
+    setupHabitEventListeners(habit, checkbox, label, statusIndicator) {
         checkbox.addEventListener('change', () => {
             habit.completed = checkbox.checked;
             
             if (habit.completed) {
-                label.classList.add('bg-green-50', 'border-green-300', 'habit-completed');
-                checkIcon.classList.remove('hidden');
-                statusIndicator.classList.remove('bg-gray-200');
-                statusIndicator.classList.add('bg-green-500');
+                label.classList.add('habit-completed');
+                statusIndicator.style.backgroundColor = 'white';
                 
                 this.showMotivationalToast();
                 
@@ -225,10 +226,8 @@ class HabitForge {
                     this.streakService.calculateStreakFromStartDate(this.state);
                 }
             } else {
-                label.classList.remove('bg-green-50', 'border-green-300', 'habit-completed');
-                checkIcon.classList.add('hidden');
-                statusIndicator.classList.remove('bg-green-500');
-                statusIndicator.classList.add('bg-gray-200');
+                label.classList.remove('habit-completed');
+                statusIndicator.style.backgroundColor = '#cbd5e1';
                 
                 if (habit.id === 'no-pmo') {
                     this.streakService.calculateStreakFromStartDate(this.state);
@@ -277,11 +276,11 @@ class HabitForge {
 
     showAddHabitModal() {
         this.elements.newHabitName.value = '';
-        this.elements.addHabitModal.classList.remove('hidden');
+        this.elements.addHabitModal.classList.add('active');
     }
 
     hideAddHabitModal() {
-        this.elements.addHabitModal.classList.add('hidden');
+        this.elements.addHabitModal.classList.remove('active');
     }
 
     updateUI() {
@@ -294,14 +293,12 @@ class HabitForge {
         
         let totalCompletion = 0;
         let dayCount = 0;
-        let totalCompletedHabits = 0;
         
         Object.values(this.state.data).forEach(dayData => {
             if (dayData.habits) {
                 const completedCount = Object.values(dayData.habits).filter(Boolean).length;
                 const completionRate = (completedCount / this.state.habits.length) * 100;
                 totalCompletion += completionRate;
-                totalCompletedHabits += completedCount;
                 dayCount++;
             }
         });
@@ -309,17 +306,8 @@ class HabitForge {
         const averageCompletion = dayCount > 0 ? Math.round(totalCompletion / dayCount) : 0;
         this.elements.completionRate.textContent = `${averageCompletion}%`;
         this.elements.totalDays.textContent = dayCount;
-        
-        // Update additional stats
-        const currentStreakDisplay = document.getElementById('current-streak-display');
-        const totalHabits = document.getElementById('total-habits');
-        
-        if (currentStreakDisplay) {
-            currentStreakDisplay.textContent = this.state.streak;
-        }
-        if (totalHabits) {
-            totalHabits.textContent = this.state.habits.length;
-        }
+        this.elements.currentStreakDisplay.textContent = this.state.streak;
+        this.elements.totalHabits.textContent = this.state.habits.length;
     }
 
     showMotivationalToast() {
@@ -422,29 +410,23 @@ class HabitForge {
 
     showHabitsTab() {
         this.uiService.activateTab('habits');
-        this.elements.menuHabits.classList.add('text-blue-600');
-        this.elements.menuHabits.classList.remove('text-gray-500');
-
-        this.elements.menuProgress.classList.add('text-gray-500');
-        this.elements.menuProgress.classList.remove('text-blue-600');
+        this.elements.menuHabits.classList.add('active');
+        this.elements.menuProgress.classList.remove('active');
     }
 
     showProgressTab() {
         this.uiService.activateTab('progress');
-        this.elements.menuProgress.classList.add('text-blue-600');
-        this.elements.menuProgress.classList.remove('text-gray-500');
-
-        this.elements.menuHabits.classList.add('text-gray-500');
-        this.elements.menuHabits.classList.remove('text-blue-600');
+        this.elements.menuProgress.classList.add('active');
+        this.elements.menuHabits.classList.remove('active');
         this.updateChart();
     }
 
     showActionsModal() {
-        this.elements.actionsModal.classList.remove('hidden');
+        this.elements.actionsModal.classList.add('active');
     }
 
     hideActionsModal() {
-        this.elements.actionsModal.classList.add('hidden');
+        this.elements.actionsModal.classList.remove('active');
     }
 
     setupEventListeners() {
@@ -453,7 +435,7 @@ class HabitForge {
             if (this.elements.startDateInput.value) {
                 this.state.startDate = new Date(this.elements.startDateInput.value);
                 this.dataService.saveData(this.state);
-                this.elements.startDateModal.classList.add('hidden');
+                this.hideStartDateModal();
                 this.updateUI();
                 this.renderHabits();
                 this.setupChart();
@@ -704,25 +686,19 @@ class UIService {
     }
 
     activateTab(tabName) {
+        // Deactivate all tabs
+        this.elements.habitsTab.classList.remove('active');
+        this.elements.progressTab.classList.remove('active');
+        this.elements.habitsContent.classList.remove('active');
+        this.elements.progressContent.classList.remove('active');
+        
+        // Activate selected tab
         if (tabName === 'habits') {
-            this.elements.habitsTab.classList.add('active', 'border-b-2', 'border-blue-500', 'text-blue-600');
-            this.elements.habitsTab.classList.remove('text-gray-500');
-
-            this.elements.progressTab.classList.remove('active', 'border-b-2', 'border-blue-500', 'text-blue-600');
-            this.elements.progressTab.classList.add('text-gray-500');
-
-            this.elements.habitsContent.classList.remove('hidden');
-            this.elements.progressContent.classList.add('hidden');
-
+            this.elements.habitsTab.classList.add('active');
+            this.elements.habitsContent.classList.add('active');
         } else {
-            this.elements.progressTab.classList.add('active', 'border-b-2', 'border-blue-500', 'text-blue-600');
-            this.elements.progressTab.classList.remove('text-gray-500');
-
-            this.elements.habitsTab.classList.remove('active', 'border-b-2', 'border-blue-500', 'text-blue-600');
-            this.elements.habitsTab.classList.add('text-gray-500');
-
-            this.elements.progressContent.classList.remove('hidden');
-            this.elements.habitsContent.classList.add('hidden');
+            this.elements.progressTab.classList.add('active');
+            this.elements.progressContent.classList.add('active');
         }
     }
 }
@@ -743,21 +719,16 @@ class HabitService {
 
     createHabitElement(habit) {
         const habitElement = document.createElement('div');
-        habitElement.className = 'habit-item flex items-center p-4 border rounded-xl hover:bg-gray-50 transition-all duration-200 relative';
+        habitElement.className = 'habit-item';
         habitElement.innerHTML = `
-            <input type="checkbox" id="${habit.id}" class="habit-checkbox hidden">
-            <label for="${habit.id}" class="habit-label flex items-center cursor-pointer w-full p-3 rounded-xl border-2 border-gray-200 transition-all duration-200 hover:border-blue-300 hover:bg-blue-50">
-                <span class="flex items-center justify-center w-7 h-7 mr-4 border-2 border-gray-300 rounded-lg bg-white transition-all duration-200">
-                    <svg class="w-4 h-4 text-white check-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                </span>
-                <span class="text-gray-800 flex-1 font-medium">${habit.name}</span>
-                <span class="status-indicator w-3 h-3 rounded-full bg-gray-200 ml-2"></span>
+            <input type="checkbox" id="${habit.id}" class="habit-checkbox">
+            <label for="${habit.id}" class="habit-label">
+                <span class="habit-name">${habit.name}</span>
+                <span class="status-indicator"></span>
             </label>
-            <button class="delete-habit-btn absolute right-4 top-1/2 transform -translate-y-1/2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition-all duration-200 opacity-0 hover:opacity-100" data-habit-id="${habit.id}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            <button class="delete-habit-btn">
+                <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
                 </svg>
             </button>
         `;
